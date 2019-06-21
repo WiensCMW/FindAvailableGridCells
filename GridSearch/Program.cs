@@ -38,20 +38,25 @@ namespace GridSearch
 
             for (int i = 1; i <= colCount; i++)
             {
-                // Check part's foot print can fit based on current loop's address
-                if (!_stockLocations.Any(x => x.CellRow == row && x.CellCol == i))
+                if (PartFootPrintSpaceFound(partHorzGridFootPrint, partVertGridFootPrint, row, i))
                 {
                     Console.WriteLine($"Cell {GetCellAddress(row, i)} open!");
                 }
             }
         }
 
-        static void LoopThroughPartFootPrintCells(int horzCells, int vertCells)
+        private static bool PartFootPrintSpaceFound(int horzCells, int vertCells, int row, int col)
         {
-            for (int i = 1; i <= horzCells; i++)
+            for (int i = 0; i < horzCells; i++)
             {
-
+                for (int x = 0; x < vertCells; x++)
+                {
+                    if (_stockLocations.Any(y => y.CellRow == row + i && y.CellCol == col + x))
+                        return false;
+                }
             }
+
+            return true;
         }
 
         private static void GetStockLocations()
