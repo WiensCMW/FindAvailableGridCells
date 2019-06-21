@@ -1,13 +1,13 @@
 ﻿namespace GridSearch
 {
-    public class StockLocation
+    public class Location
     {
         public int LocationID { get; set; }
         public int CellRow { get; set; }
         public int CellCol { get; set; }
         public string CellAddress { get; set; }
 
-        public StockLocation(int locationID,
+        public Location(int locationID,
             int cellRow,
             int cellCol,
             string cellAddress)
