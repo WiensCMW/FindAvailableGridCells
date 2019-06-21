@@ -24,10 +24,10 @@ namespace GridSearch
             int rowCount = 3;
 
             // Loop through the rows in the grid
-            for (int i = 0; i < rowCount; i++)
+            for (int i = 1; i <= rowCount; i++)
             {
                 // Loop through the columns for the current row
-                LoopThroughCols(i + 1, colCount);
+                LoopThroughCols(i, colCount);
             }
         }
 
@@ -36,17 +36,21 @@ namespace GridSearch
             int partHorzGridFootPrint = 2;
             int partVertGridFootPrint = 2;
 
-            List<string> availableCells = new List<string>();
-
-            for (int i = 0; i < colCount; i++)
+            for (int i = 1; i <= colCount; i++)
             {
-                int loopCol = i + 1;
-
                 // Check part's foot print can fit based on current loop's address
-                if (!_stockLocations.Any(x => x.CellRow == row && x.CellCol == loopCol))
+                if (!_stockLocations.Any(x => x.CellRow == row && x.CellCol == i))
                 {
-                    Console.WriteLine($"Cell {GetCellAddress(row, loopCol)} open!");
+                    Console.WriteLine($"Cell {GetCellAddress(row, i)} open!");
                 }
+            }
+        }
+
+        static void LoopThroughPartFootPrintCells(int horzCells, int vertCells)
+        {
+            for (int i = 1; i <= horzCells; i++)
+            {
+
             }
         }
 
