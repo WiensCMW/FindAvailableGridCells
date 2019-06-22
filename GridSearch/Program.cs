@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -13,13 +14,18 @@ namespace GridSearch
         //private static float _partWidth = 3f;
         //private static float _partDepth = 3f;
 
-        private static int _colCount = 3;
+        private static int _colCount = 2;
         private static int _rowCount = 3;
 
-        private static List<Location> _stockLocations = new List<Location>();
+        private static List<Location> _locations = new List<Location>();
+
+        // Debug variables
+        private static int _loopCount;
+        private static Stopwatch _stopWatch = new Stopwatch();
 
         static void Main(string[] args)
         {
+            _stopWatch.Restart();
             GenerateSampleLocations();
 
             int partHorzGridFootPrint = 2;
@@ -28,9 +34,11 @@ namespace GridSearch
             // Loop through the rows in the grid
             for (int r = 1; r <= _rowCount; r++)
             {
+                _loopCount++;
                 // Loop through all the columns for current loop row
                 for (int c = 1; c <= _colCount; c++)
                 {
+                    _loopCount++;
                     // Check if the parts foot print can fit anchored to the current row and column
                     if (CheckPartFootPrint(partHorzGridFootPrint, partVertGridFootPrint, r, c))
                     {
@@ -39,17 +47,31 @@ namespace GridSearch
                 }
             }
 
+
+            Console.WriteLine();
+            Console.WriteLine($"Loop Count: {_loopCount}");
+            Console.WriteLine($"Time(ms): {_stopWatch.Elapsed.TotalMilliseconds}");
+
             Console.ReadLine();
         }
+
+        /// <summary>
+        /// item1 = ID, item2 = Row, item3 = Colum
+        /// </summary>
+        static List<Tuple<int, int, int>> _availableCellsFound = new List<Tuple<int, int, int>>();
 
         private static bool CheckPartFootPrint(int partHorzGrids, int partVertGrids, int row, int col)
         {
             for (int i = 0; i < partHorzGrids; i++)
             {
+                _loopCount++;
                 for (int x = 0; x < partVertGrids; x++)
                 {
-                    if (_stockLocations.Any(y => y.CellRow == row + i && y.CellCol == col + x))
+                    _loopCount++;
+                    if (_locations.Any(y => y.CellRow == row + i && y.CellCol == col + x))
                         return false;
+
+                    _availableCellsFound.Add(new Tuple<int, int, int>(1, row + 1, col + x));
                 }
             }
 
@@ -58,13 +80,10 @@ namespace GridSearch
 
         private static void GenerateSampleLocations()
         {
-            _stockLocations.Clear();
-            _stockLocations.Add(new Location(1, 1, 1, "A1"));
-            _stockLocations.Add(new Location(2, 2, 1, "A2"));
-            _stockLocations.Add(new Location(3, 3, 1, "A3"));
-            _stockLocations.Add(new Location(4, 1, 3, "C1"));
-            //_stockLocations.Add(new Location(4, 1, 4, "D1"));
-            //_stockLocations.Add(new Location(4, 2, 4, "D2"));
+            _locations.Clear();
+            _locations.Add(new Location(1, 1, 1, "A1"));
+            //_locations.Add(new Location(2, 2, 1, "A2"));
+            //_locations.Add(new Location(3, 3, 1, "A3"));
         }
 
         private static string GetCellAddress(int row, int col)
@@ -80,16 +99,29 @@ namespace GridSearch
         }
 
         #region Print Table to Console
-        static int tableWidth = 77;
+        static int _tableWidth = 77;
+
+        static void PrintTable()
+        {
+            // Print Column Header Row
+            string[] cols = new string[_colCount];
+            for (int c = 0; c < cols.Length; c++)
+            {
+                cols[c] = GetCellAddress(1, c + 1).Replace("1", "");
+            }
+            PrintLine();
+            PrintRow(cols);
+            PrintLine();
+        }
 
         static void PrintLine()
         {
-            Console.WriteLine(new string('-', tableWidth));
+            Console.WriteLine(new string('-', _tableWidth));
         }
 
         static void PrintRow(params string[] columns)
         {
-            int width = (tableWidth - columns.Length) / columns.Length;
+            int width = (_tableWidth - columns.Length) / columns.Length;
             string row = "|";
 
             foreach (string column in columns)
