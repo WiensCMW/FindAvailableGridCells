@@ -42,11 +42,20 @@ namespace GridSearch
                     // Check if the parts foot print can fit anchored to the current row and column
                     if (CheckPartFootPrint(partHorzGridFootPrint, partVertGridFootPrint, r, c))
                     {
-                        Console.WriteLine($"Cell {GetCellAddress(r, c)} open!");
+                        Console.WriteLine($"Cell {GetCellAddress(r, c)} can anchor the part!!!!");
                     }
                 }
             }
 
+            // Print Available Cells
+            Console.WriteLine("Available Cells:");
+            for (int i = 0; i < _availableCellsFound.Count; i++)
+            {
+                Console.WriteLine($"LocationID:{_availableCellsFound[i].LocationID} " +
+                    $"Row:{_availableCellsFound[i].CellRow} " +
+                    $"Col:{_availableCellsFound[i].CellCol} " +
+                    $"Cell:{_availableCellsFound[i].CellAddress}");
+            }
 
             Console.WriteLine();
             Console.WriteLine($"Loop Count: {_loopCount}");
@@ -56,12 +65,25 @@ namespace GridSearch
         }
 
         /// <summary>
-        /// item1 = ID, item2 = Row, item3 = Colum
+        /// item2 = Row, item3 = Colum
         /// </summary>
-        static List<Tuple<int, int, int>> _availableCellsFound = new List<Tuple<int, int, int>>();
+        static List<Location> _availableCellsFound = new List<Location>();
 
         private static bool CheckPartFootPrint(int partHorzGrids, int partVertGrids, int row, int col)
         {
+            /* Check if the current part's horz and vert foot print cells will run out of the grid's
+             * bounds based on the current row and cell. If the part's foot print will run out of the
+             * grid's bounds, the part can't fit from the current row/col so we return false. */
+            if (col + (partHorzGrids - 1) > _colCount
+                || row + (partVertGrids - 1) > _rowCount)
+                return false;
+
+            // Get max location ID from found cells list
+            int maxFoundLocationID = (_availableCellsFound.Count > 0) ? _availableCellsFound[_availableCellsFound.Count - 1].LocationID : 0;
+            maxFoundLocationID++;
+
+            /* Loop through part's horz and vert foot print cells and check if any of them intersect with
+             * existing locations. If any intersects are found, the current part can't fit so we return false. */
             for (int i = 0; i < partHorzGrids; i++)
             {
                 _loopCount++;
@@ -71,7 +93,7 @@ namespace GridSearch
                     if (_locations.Any(y => y.CellRow == row + i && y.CellCol == col + x))
                         return false;
 
-                    _availableCellsFound.Add(new Tuple<int, int, int>(1, row + 1, col + x));
+                    _availableCellsFound.Add(new Location(maxFoundLocationID, row + i, col + x, GetCellAddress(row + i, col + x)));
                 }
             }
 
