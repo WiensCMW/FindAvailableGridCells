@@ -8,11 +8,7 @@ namespace GridSearch
 {
     class Program
     {
-        //private static float _gridWidth = 4f;
-        //private static float _gridDepth = 4f;
-
-        //private static float _partWidth = 3f;
-        //private static float _partDepth = 3f;
+        private static ConsolePrinter _printer = new ConsolePrinter(77);
 
         private static int _colCount = 2;
         private static int _rowCount = 3;
@@ -30,7 +26,7 @@ namespace GridSearch
             GenerateSampleLocations();
 
             int partHorzGridFootPrint = 1;
-            int partVertGridFootPrint = 4;
+            int partVertGridFootPrint = 3;
 
             // Check for available locations based on parts horz and vert foot print
             CheckForAvailableLocations(partHorzGridFootPrint, partVertGridFootPrint);
@@ -41,9 +37,9 @@ namespace GridSearch
             if (partHorzGridFootPrint != partVertGridFootPrint)
             {
                 Console.WriteLine();
-                PrintLine();
+                _printer.PrintLine();
                 Console.WriteLine("Flipped!!");
-                PrintLine();
+                _printer.PrintLine();
                 Console.WriteLine();
                 _availableCellsFound.Clear();
                 CheckForAvailableLocations(partVertGridFootPrint, partHorzGridFootPrint);
@@ -55,7 +51,7 @@ namespace GridSearch
         private static void CheckForAvailableLocations(int partHorzGrid, int partVertGrid)
         {
             Console.WriteLine($"Horz:{partHorzGrid} Vert:{partVertGrid}");
-            PrintLine();
+            _printer.PrintLine();
 
             // Loop through the rows in the grid
             for (int r = 1; r <= _rowCount; r++)
@@ -88,9 +84,9 @@ namespace GridSearch
             }
             else
             {
-                PrintLine();
+                _printer.PrintLine();
                 Console.WriteLine("NOTHING FOUND!!");
-                PrintLine();
+                _printer.PrintLine();
             }
 
             Console.WriteLine();
@@ -166,9 +162,6 @@ namespace GridSearch
             return "";
         }
 
-        #region Print Table to Console
-        static int _tableWidth = 77;
-
         static void PrintTable()
         {
             // Print Column Header Row
@@ -177,42 +170,9 @@ namespace GridSearch
             {
                 cols[c] = GetCellAddress(1, c + 1).Replace("1", "");
             }
-            PrintLine();
-            PrintRow(cols);
-            PrintLine();
+            _printer.PrintLine();
+            _printer.PrintRow(cols);
+            _printer.PrintLine();
         }
-
-        static void PrintLine()
-        {
-            Console.WriteLine(new string('-', _tableWidth));
-        }
-
-        static void PrintRow(params string[] columns)
-        {
-            int width = (_tableWidth - columns.Length) / columns.Length;
-            string row = "|";
-
-            foreach (string column in columns)
-            {
-                row += AlignCentre(column, width) + "|";
-            }
-
-            Console.WriteLine(row);
-        }
-
-        static string AlignCentre(string text, int width)
-        {
-            text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
-
-            if (string.IsNullOrEmpty(text))
-            {
-                return new string(' ', width);
-            }
-            else
-            {
-                return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
-            }
-        }
-        #endregion
     }
 }
