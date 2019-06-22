@@ -28,8 +28,11 @@ namespace GridSearch
             _stopWatch.Restart();
             GenerateSampleLocations();
 
-            int partHorzGridFootPrint = 2;
+            int partHorzGridFootPrint = 1;
             int partVertGridFootPrint = 2;
+
+            Console.WriteLine($"Horz:{partHorzGridFootPrint} Vert:{partVertGridFootPrint}");
+            PrintLine();
 
             // Loop through the rows in the grid
             for (int r = 1; r <= _rowCount; r++)
@@ -48,6 +51,7 @@ namespace GridSearch
             }
 
             // Print Available Cells
+            Console.WriteLine();
             Console.WriteLine("Available Cells:");
             for (int i = 0; i < _availableCellsFound.Count; i++)
             {
@@ -61,7 +65,7 @@ namespace GridSearch
             Console.WriteLine($"Loop Count: {_loopCount}");
             Console.WriteLine($"Time(ms): {_stopWatch.Elapsed.TotalMilliseconds}");
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         /// <summary>
@@ -74,8 +78,12 @@ namespace GridSearch
             /* Check if the current part's horz and vert foot print cells will run out of the grid's
              * bounds based on the current row and cell. If the part's foot print will run out of the
              * grid's bounds, the part can't fit from the current row/col so we return false. */
-            if (col + (partHorzGrids - 1) > _colCount
-                || row + (partVertGrids - 1) > _rowCount)
+            if (partHorzGrids > 1
+                && col + (partHorzGrids - 1) > _colCount)
+                return false;
+
+            if (partVertGrids > 1
+                && row + (partVertGrids - 1) > _rowCount)
                 return false;
 
             // Get max location ID from found cells list
