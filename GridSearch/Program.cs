@@ -28,8 +28,8 @@ namespace GridSearch
             _stopWatch.Restart();
             GenerateSampleLocations();
 
-            int partHorzGridFootPrint = 1;
-            int partVertGridFootPrint = 2;
+            int partHorzGridFootPrint = 2;
+            int partVertGridFootPrint = 1;
 
             Console.WriteLine($"Horz:{partHorzGridFootPrint} Vert:{partVertGridFootPrint}");
             PrintLine();
@@ -92,16 +92,20 @@ namespace GridSearch
 
             /* Loop through part's horz and vert foot print cells and check if any of them intersect with
              * existing locations. If any intersects are found, the current part can't fit so we return false. */
-            for (int i = 0; i < partHorzGrids; i++)
+            for (int c = 0; c < partHorzGrids; c++)
             {
                 _loopCount++;
-                for (int x = 0; x < partVertGrids; x++)
+                for (int r = 0; r < partVertGrids; r++)
                 {
                     _loopCount++;
-                    if (_locations.Any(y => y.CellRow == row + i && y.CellCol == col + x))
+                    int rowVal = row + r;
+                    int colVal = col + c;
+                    string cellAddr = GetCellAddress(rowVal, colVal);
+
+                    if (_locations.Any(y => y.CellRow == rowVal && y.CellCol == colVal))
                         return false;
 
-                    _availableCellsFound.Add(new Location(maxFoundLocationID, row + i, col + x, GetCellAddress(row + i, col + x)));
+                    _availableCellsFound.Add(new Location(maxFoundLocationID, rowVal, colVal, cellAddr));
                 }
             }
 
