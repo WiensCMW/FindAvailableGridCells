@@ -45,7 +45,7 @@ namespace GridSearch
                 CheckForAvailableLocations(partVertGridFootPrint, partHorzGridFootPrint);
             }
 
-            //Console.ReadLine();
+            Console.ReadLine();
         }
 
         private static void CheckForAvailableLocations(int partHorzGrid, int partVertGrid)
